@@ -42,10 +42,13 @@ run = Popen([cmdChanged], shell = True, stdout = PIPE, stdin = PIPE)
 run.wait()
 
 # Pick out the .tex files returned by the diff
-folders = [line for line in run.stdout if line.endswith(".tex\n")]
+texfiles = [line for line in run.stdout if line.endswith(".tex\n")]
+
+# Check that .tex files exist and aren't in the diff because they were deleted. (There's probably a different diff command that would have presorted this.)
+texfiles = [texfile for texfile in texfiles if os.path.exists(texfile)]
 
 # Loop over the standard out to recover the file names
-for file in folders:
+for file in texfiles:
 
 	# Use / to split into file names and add the folder end needed
 	path = os.path.split(file)[0] + '/'
